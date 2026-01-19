@@ -1,0 +1,53 @@
+
+import java.sql.*;
+import java.util.Scanner;
+
+public class JdbcInsertExample {
+
+    public static void main(String[] args) {
+        
+        String url = "jdbc:mysql://localhost:3306/testdb";
+        String user = "root";        
+        String password = "22053";  
+
+        Scanner sc = new Scanner(System.in);
+
+        try {
+           
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+          
+            Connection con = DriverManager.getConnection(url, user, password);
+
+            
+            System.out.print("Enter ID: ");
+            int id = sc.nextInt();
+            sc.nextLine(); // consume newline
+            System.out.print("Enter Name: ");
+            String name = sc.nextLine();
+
+            
+            String sql = "INSERT INTO users (id, name) VALUES (?, ?)";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, id);
+            pst.setString(2, name);
+
+           
+            int rowsInserted = pst.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Data inserted successfully!");
+            }
+
+            pst.close();
+            con.close();
+        } catch (ClassNotFoundException e) {
+            System.out.println("MySQL JDBC Driver not found.");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("Database error:");
+            e.printStackTrace();
+        } finally {
+            sc.close();
+        }
+    }
+}
